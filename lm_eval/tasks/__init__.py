@@ -14,7 +14,7 @@ class TaskManager:
 
     """
 
-    def __init__(self, verbosity="INFO", include_path: Optional[str] = None) -> None:
+    def __init__(self, verbosity="INFO", include_path: Optional[str] = None, override_data_path : Optional[str] = None) -> None:
         self.verbosity = verbosity
         self.include_path = include_path
         self.logger = utils.eval_logger
@@ -24,6 +24,7 @@ class TaskManager:
         self._all_tasks = sorted(list(self._task_index.keys()))
 
         self.task_group_map = collections.defaultdict(list)
+        self.override_data_path = override_data_path
 
     def initialize_tasks(self, include_path: Optional[str] = None):
         """Creates a dictionary of tasks index.
@@ -158,6 +159,9 @@ class TaskManager:
                 name_or_config = {"task": name_or_config, **update_config}
             elif self._name_is_task(name_or_config):
                 task_config = self._get_config(name_or_config)
+                if self.override_data_path is not None:
+                    file = task_config['dataset_kwargs']['data_files']
+                    task_config['dataset_kwargs']['data_files'] = os.path.join(self.override_data_path, os.path.basename(file))
                 return load_task(task_config, task=name_or_config, group=parent_name)
             else:
                 group_name = name_or_config
