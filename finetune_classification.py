@@ -425,6 +425,9 @@ def main():
         ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
     )
 
+    if model.config.pad_token_id is None:
+        model.config.pad_token_id = tokenizer.pad_token_id
+
     # Freeze all parameters (including embeddings) except the classifier head
     if model_args.freeze_model:
         for name, param in model.named_parameters():

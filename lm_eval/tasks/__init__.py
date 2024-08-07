@@ -161,7 +161,8 @@ class TaskManager:
                 task_config = self._get_config(name_or_config)
                 if self.override_data_path is not None:
                     file = task_config['dataset_kwargs']['data_files']
-                    task_config['dataset_kwargs']['data_files'] = os.path.join(self.override_data_path, os.path.basename(file))
+                    file = file.replace('evaluation_data', self.override_data_path)
+                    task_config['dataset_kwargs']['data_files'] = file
                 return load_task(task_config, task=name_or_config, group=parent_name)
             else:
                 group_name = name_or_config
