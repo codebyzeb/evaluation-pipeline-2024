@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MODEL_PATH=$1
-LR=${2:-5e-5}           # default: 5e-4
+LR=${2:-5e-5}           # default: 5e-5
 PATIENCE=${3:-3}       # default: 3
 BSZ=${4:-64}            # default: 64
 MAX_EPOCHS=${5:-10}     # default: 10
@@ -31,7 +31,6 @@ for task in {boolq,cola,mnli,mnli-mm,mrpc,multirc,qnli,qqp,rte,sst2,wsc}; do
 	  --do_train $DO_TRAIN \
 	  --do_eval \
 	  --do_predict \
-	  --use_fast_tokenizer False \
 	  --max_seq_length 128 \
 	  --per_device_train_batch_size $BSZ \
 	  --learning_rate $LR \
@@ -40,6 +39,8 @@ for task in {boolq,cola,mnli,mnli-mm,mrpc,multirc,qnli,qqp,rte,sst2,wsc}; do
 	  --evaluation_strategy epoch \
 	  --save_strategy epoch \
 	  --overwrite_output_dir \
-	  --trust_remote_code \
 	  --seed $SEED
 done
+
+# Add `--trust_remote_code` if you need to load custom config/model files.
+# If you run into memory issues, try reducing $BSZ or reducing `--max_seq_length` first.
